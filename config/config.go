@@ -49,5 +49,6 @@ func Read(filename string) (map[string]string, error) {
 		res[strings.TrimSpace(sp[0])] = strings.TrimSpace(sp[1])
 		line = ""
 	}
+	in.Close()
 	return res, nil
 }
