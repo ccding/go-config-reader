@@ -23,6 +23,8 @@ import (
 	"strings"
 )
 
+var commentPrefix = []string{"//", "#", ";"}
+
 func Read(filename string) (map[string]string, error) {
 	var res = map[string]string{}
 	in, err := os.Open(filename)
@@ -43,10 +45,7 @@ func Read(filename string) (map[string]string, error) {
 				continue
 			}
 		}
-		if strings.HasPrefix(scanner.Text(), "//") {
-			continue
-		}
-		if strings.HasPrefix(scanner.Text(), "#") {
+		if checkComment(scanner.Text()) {
 			continue
 		}
 		line += scanner.Text()
@@ -72,7 +71,7 @@ func checkSection(line string) string {
 		return ""
 	}
 	if line[0] == '[' && line[lineLen-1] == ']' {
-		return line[1:lineLen-1]
+		return line[1 : lineLen-1]
 	}
 	return ""
 }
@@ -87,4 +86,13 @@ func checkLine(line string) (string, string, error) {
 	key = strings.TrimSpace(sp[0])
 	value = strings.TrimSpace(sp[1])
 	return key, value, nil
+}
+
+func checkComment(line string) bool {
+	for p := range commentPrefix {
+		if strings.HasPrefix(line, commentPrefix[p]) {
+			return true
+		}
+	}
+	return false
 }
