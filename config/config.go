@@ -31,7 +31,18 @@ func Read(filename string) (map[string]string, error) {
 	}
 	scanner := bufio.NewScanner(in)
 	line := ""
+	section := ""
 	for scanner.Scan() {
+		if scanner.Text() == "" {
+			continue
+		}
+		if line == "" {
+			sec := checkSection(scanner.Text())
+			if sec != "" {
+				section = sec + "."
+				continue
+			}
+		}
 		if strings.HasPrefix(scanner.Text(), "//") {
 			continue
 		}
@@ -43,13 +54,37 @@ func Read(filename string) (map[string]string, error) {
 			line = line[:len(line)-1]
 			continue
 		}
-		sp := strings.SplitN(line, "=", 2)
-		if len(sp) != 2 {
+		key, value, err := checkLine(line)
+		if err != nil {
 			return res, errors.New("WRONG: " + line)
 		}
-		res[strings.TrimSpace(sp[0])] = strings.TrimSpace(sp[1])
+		res[section+key] = value
 		line = ""
 	}
 	in.Close()
 	return res, nil
+}
+
+func checkSection(line string) string {
+	line = strings.TrimSpace(line)
+	lineLen := len(line)
+	if lineLen < 2 {
+		return ""
+	}
+	if line[0] == '[' && line[lineLen-1] == ']' {
+		return line[1:lineLen-1]
+	}
+	return ""
+}
+
+func checkLine(line string) (string, string, error) {
+	key := ""
+	value := ""
+	sp := strings.SplitN(line, "=", 2)
+	if len(sp) != 2 {
+		return key, value, errors.New("WRONG: " + line)
+	}
+	key = strings.TrimSpace(sp[0])
+	value = strings.TrimSpace(sp[1])
+	return key, value, nil
 }
