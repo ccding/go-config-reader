@@ -18,6 +18,7 @@ package config
 
 import (
 	"bufio"
+	"errors"
 	"os"
 	"strings"
 )
@@ -44,7 +45,7 @@ func Read(filename string) (map[string]string, error) {
 		}
 		sp := strings.SplitN(line, "=", 2)
 		if len(sp) != 2 {
-			continue
+			return res, errors.New("WRONG: " + line)
 		}
 		res[strings.TrimSpace(sp[0])] = strings.TrimSpace(sp[1])
 		line = ""
