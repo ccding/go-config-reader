@@ -44,6 +44,21 @@ func NewConfig(filename string) *Config {
 	return c
 }
 
+// Filename function returns the filename of the configuration.
+func (c *Config) Filename() string {
+	return c.filename
+}
+
+// SetFilename function sets the filename of the configuration.
+func (c *Config) SetFilename(filename string) {
+	c.filename = filename
+}
+
+// Reset function reset the map in the configuration.
+func (c *Config) Reset() {
+	c.config = make(map[string]map[string]string)
+}
+
 // Read function reads configurations from the file defined in
 // Config.filename.
 func (c *Config) Read() error {
