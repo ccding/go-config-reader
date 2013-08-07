@@ -22,9 +22,10 @@ import (
 )
 
 func main() {
-	res, err := config.Read("example.conf")
+	c := config.NewConfig("example.conf")
+	err := c.Read()
 	fmt.Println(err)
-	fmt.Println(res)
-	fmt.Println(res["test.a"])
-	fmt.Println(res["dd"])
+	fmt.Println(c)
+	fmt.Println(c.Get("test.a"))
+	fmt.Println(c.Get("dd"))
 }

@@ -25,11 +25,22 @@ import (
 
 var commentPrefix = []string{"//", "#", ";"}
 
-func Read(filename string) (map[string]string, error) {
-	var res = map[string]string{}
-	in, err := os.Open(filename)
+type Config struct {
+	filename string
+	config   map[string]string
+}
+
+func NewConfig(filename string) *Config {
+	c := new(Config)
+	c.filename = filename
+	c.config = make(map[string]string)
+	return c
+}
+
+func (c *Config) Read() error {
+	in, err := os.Open(c.filename)
 	if err != nil {
-		return res, err
+		return err
 	}
 	defer in.Close()
 	scanner := bufio.NewScanner(in)
@@ -56,12 +67,35 @@ func Read(filename string) (map[string]string, error) {
 		}
 		key, value, err := checkLine(line)
 		if err != nil {
-			return res, errors.New("WRONG: " + line)
+			return errors.New("WRONG: " + line)
 		}
-		res[section+key] = value
+		c.config[section+key] = value
 		line = ""
 	}
-	return res, nil
+	return nil
+}
+
+func (c *Config) Get(key string) string {
+	value, ok := c.config[key]
+	if !ok {
+		return ""
+	}
+	return value
+}
+
+func (c *Config) Set(key string, value string) {
+	c.config[key] = value
+}
+
+func (c *Config) Add(key string, value string) {
+	c.config[key] = value
+}
+
+func (c *Config) Del(key string) {
+	delete(c.config, key)
+}
+
+func (c *Config) Write() {
 }
 
 func checkSection(line string) string {
