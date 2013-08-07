@@ -25,11 +25,18 @@ import (
 
 var commentPrefix = []string{"//", "#", ";"}
 
+// Config struct constructs a new configuration handler.
 type Config struct {
 	filename string
 	config   map[string]string
 }
 
+// NewConfig function cnstructs a new Config struct with filename. You have to
+// call Read() function to let it read from the file. Otherwise you will get
+// empty string (i.e., "") when you are calling Get() function. Another usage
+// is that you call NewConfig() function and then call Add()/Set() function to
+// add new key-values to the configuration. Finally you can call Write()
+// function to write the new configuration to the file.
 func NewConfig(filename string) *Config {
 	c := new(Config)
 	c.filename = filename
@@ -37,6 +44,8 @@ func NewConfig(filename string) *Config {
 	return c
 }
 
+// Read function reads configurations from the file defined in
+// Config.filename.
 func (c *Config) Read() error {
 	in, err := os.Open(c.filename)
 	if err != nil {
@@ -75,6 +84,8 @@ func (c *Config) Read() error {
 	return nil
 }
 
+// Get function returns the value of a key in the configuration. If the key
+// does not exist, it returns empty string (i.e., "").
 func (c *Config) Get(key string) string {
 	value, ok := c.config[key]
 	if !ok {
@@ -83,21 +94,34 @@ func (c *Config) Get(key string) string {
 	return value
 }
 
+// Set function updates the value of a key in the configuration. Function
+// Set() is exactly the same as function Add().
 func (c *Config) Set(key string, value string) {
 	c.config[key] = value
 }
 
+// Add function adds a new key to the configuration. Function Add() is exactly
+// the same as function Set().
 func (c *Config) Add(key string, value string) {
 	c.config[key] = value
 }
 
+// Del function deletes a key from the configuration.
 func (c *Config) Del(key string) {
 	delete(c.config, key)
 }
 
+// Write function writes the updated configuration back.
 func (c *Config) Write() {
 }
 
+// WriteTo function writes the configuration to a new file. This function
+// re-organizes the configuration and deletes all the comments.
+func (c *Config) WriteTo(filename string) {
+}
+
+// To check this line if section or not. If it is not a section, it returns
+// "".
 func checkSection(line string) string {
 	line = strings.TrimSpace(line)
 	lineLen := len(line)
@@ -110,6 +134,7 @@ func checkSection(line string) string {
 	return ""
 }
 
+// To check this line is a valid key-value pair or not.
 func checkLine(line string) (string, string, error) {
 	key := ""
 	value := ""
@@ -122,6 +147,7 @@ func checkLine(line string) (string, string, error) {
 	return key, value, nil
 }
 
+// To check this line is a whole line comment or not.
 func checkComment(line string) bool {
 	line = strings.TrimSpace(line)
 	for p := range commentPrefix {
