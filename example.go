@@ -26,6 +26,6 @@ func main() {
 	err := c.Read()
 	fmt.Println(err)
 	fmt.Println(c)
-	fmt.Println(c.Get("test.a"))
-	fmt.Println(c.Get("dd"))
+	fmt.Println(c.Get("test", "a"))
+	fmt.Println(c.Get("", "dd"))
 }
