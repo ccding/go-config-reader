@@ -139,12 +139,13 @@ func (c *Config) Del(section string, key string) {
 }
 
 // Write function writes the updated configuration back.
-func (c *Config) Write() {
+func (c *Config) Write() error {
+	return nil
 }
 
 // WriteTo function writes the configuration to a new file. This function
 // re-organizes the configuration and deletes all the comments.
-func (c *Config) WriteTo(filename string) {
+func (c *Config) WriteTo(filename string) error {
 	content := ""
 	for k, v := range c.config {
 		content += fmt.Sprintf("[%v]\n", k)
@@ -152,7 +153,7 @@ func (c *Config) WriteTo(filename string) {
 			content += fmt.Sprintf("\t%v = %v\n", key, value)
 		}
 	}
-	ioutil.WriteFile(filename, []byte(content), 0644)
+	return ioutil.WriteFile(filename, []byte(content), 0644)
 }
 
 // To check this line if section or not. If it is not a section, it returns
