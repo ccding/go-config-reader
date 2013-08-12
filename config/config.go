@@ -148,15 +148,13 @@ func (c *Config) Write() error {
 func (c *Config) WriteTo(filename string) error {
 	content := ""
 	for k, v := range c.config {
+		format := "%v = %v\n"
 		if k != "" {
 			content += fmt.Sprintf("[%v]\n", k)
+			format = "\t" + format
 		}
 		for key, value := range v {
-			if k != "" {
-				content += fmt.Sprintf("\t%v = %v\n", key, value)
-			} else {
-				content += fmt.Sprintf("%v = %v\n", key, value)
-			}
+			content += fmt.Sprintf(format, key, value)
 		}
 	}
 	return ioutil.WriteFile(filename, []byte(content), 0644)
