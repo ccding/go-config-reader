@@ -162,7 +162,7 @@ func (c *Config) WriteTo(filename string) error {
 	return ioutil.WriteFile(filename, []byte(content), 0644)
 }
 
-// To check this line if section or not. If it is not a section, it returns
+// To check this line is a section or not. If it is not a section, it returns
 // "".
 func checkSection(line string) (string, bool) {
 	line = strings.TrimSpace(line)
